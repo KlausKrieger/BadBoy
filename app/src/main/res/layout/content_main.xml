@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="de.kriegergilde.badboy.MainActivity"
+    tools:showIn="@layout/activity_main">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Rang: "
+        android:id="@+id/textViewRank" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Gesundheit/Schutz:"
+        android:id="@+id/textViewLife"
+        android:layout_below="@+id/textViewRank"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Zaster:"
+        android:id="@+id/textViewCurrency"
+        android:layout_below="@+id/textViewLife"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Handlanger:"
+        android:id="@+id/textViewHenchman"
+        android:layout_below="@+id/textViewCurrency"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="besorgen"
+        android:id="@+id/buttonHenchman"
+        android:layout_below="@+id/textViewHenchman"
+        android:layout_alignParentStart="true"
+        android:capitalize="none"
+        android:clickable="true"
+        android:textAlignment="viewStart" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Kleidung:"
+        android:id="@+id/textViewCloth"
+        android:layout_below="@+id/buttonHenchman"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="besorgen"
+        android:id="@+id/buttonCloth"
+        android:layout_below="@+id/textViewCloth"
+        android:layout_alignParentStart="true"
+        android:capitalize="none"
+        android:clickable="true"
+        android:textAlignment="viewStart" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Gesicht:"
+        android:id="@+id/textViewFace"
+        android:layout_below="@+id/buttonCloth"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="besorgen"
+        android:id="@+id/buttonFace"
+        android:layout_below="@+id/textViewFace"
+        android:layout_alignParentStart="true"
+        android:capitalize="none"
+        android:clickable="true"
+        android:textAlignment="viewStart" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Waffe:"
+        android:id="@+id/textViewWeapon"
+        android:layout_below="@+id/buttonFace"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="besorgen"
+        android:id="@+id/buttonWeapon"
+        android:layout_below="@+id/textViewWeapon"
+        android:layout_alignParentStart="true"
+        android:capitalize="none"
+        android:clickable="true"
+        android:textAlignment="viewStart" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="aktuelle Coups:"
+        android:id="@+id/textViewCoup"
+        android:layout_below="@+id/buttonWeapon"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="  Details:"
+        android:id="@+id/textViewCoupDetails"
+        android:layout_below="@+id/textViewCoup"
+        android:layout_alignParentStart="true" />
+
+
+
+
+</RelativeLayout>
+</ScrollView>
