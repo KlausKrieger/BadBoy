@@ -16,16 +16,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
-import static de.kriegergilde.badboy.Constants.*;
-
-import static de.kriegergilde.badboy.MainActivity.mLastLocation;
+import static de.kriegergilde.badboy.MainActivity.mCurrentLocation;
 
 
 /**
@@ -92,23 +88,29 @@ public class VenuesActivity extends ListActivity  {
 
     protected void onStart() {
         super.onStart();
-        new LongRunningGetIO().execute();
+        new VenuesFetcherTask(this).execute();
 
         Protagonist.restoreBaseData(this);
         Protagonist.restoreVisitedData(this);
     }
 
-    private class LongRunningGetIO extends AsyncTask<Void, Void, List<Venue>> {
+    private static class VenuesFetcherTask extends AsyncTask<Void, Void, List<Venue>> {
+
+        private VenuesActivity venuesActivity;
+
+        private VenuesFetcherTask(VenuesActivity va){
+            this.venuesActivity = va;
+        }
 
         @Override
         protected List<Venue> doInBackground(Void... params) {
-            if (mLastLocation == null){
+            if (mCurrentLocation == null){
                 return null;
             }
             String CLIENT_ID = "U5AVH4K5RI3OW5RBPRFQ2VA11Z01AFIV1SDCNSERQM1S1PM1";
             String CLIENT_SECRET = "QQZB0TVTLJMUG5PT13552LMQ3LGPQDD3WM0I2L4ZOLSSMXAL";
             String VERSION = "20130815";
-            String LOC = mLastLocation.getLatitude()+","+mLastLocation.getLongitude();
+            String LOC = mCurrentLocation.getLatitude()+","+mCurrentLocation.getLongitude();
             String uri = "https://api.foursquare.com/v2/venues/search?client_id=" + CLIENT_ID
                     + "&client_secret=" + CLIENT_SECRET
                     + "&v=" + VERSION
@@ -177,11 +179,11 @@ public class VenuesActivity extends ListActivity  {
 
         protected void onPostExecute(List<Venue> results) {
             if (results != null) {
-                ArrayAdapter<Venue> adapter = new ArrayAdapter<Venue>(VenuesActivity.this, R.layout.activity_venues, results);
-                VenuesActivity.this.setListAdapter(adapter);
+                ArrayAdapter<Venue> adapter = new ArrayAdapter<Venue>(venuesActivity, R.layout.activity_venues, results);
+                venuesActivity.setListAdapter(adapter);
                 adapter.notifyDataSetChanged();
             } else {
-                Toast toast = Toast.makeText(getApplicationContext(), "failed to load venues", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(venuesActivity, "failed to load venues", Toast.LENGTH_LONG);
                 toast.show();
             }
 

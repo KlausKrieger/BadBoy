@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">BadBoy</string>
     <string name="action_settings">Settings</string>
+    <string name="settings">Einstellungen</string>
+    <string name="permission_denied_explanation">Die App braucht Zugriff auf Ortsdaten!</string>
+    <string name="permission_rationale">Standort wird benötigt</string>
 </resources>

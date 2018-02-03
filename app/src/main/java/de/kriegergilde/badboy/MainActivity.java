@@ -1,37 +1,74 @@
 package de.kriegergilde.badboy;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 /**
- * // TODO: TODOs ausbauen
+ * // TODO: TODOs ausbauen und stop einbauen!!
  *
  *
  */
-public class MainActivity extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MainActivity extends AppCompatActivity {
 
-    public static Location mLastLocation;
+    /**
+     * Code used in requesting runtime permissions.
+     */
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
-    private GoogleApiClient mGoogleApiClient;
+    /**
+     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
+     */
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 4_000;
 
-    protected LocationRequest mLocationRequest;
+    /**
+     * The fastest rate for active location updates. Exact. Updates will never be more frequent
+     * than this value.
+     */
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 500;
+
+    /**
+     * Provides access to the Fused Location Provider API.
+     */
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    /**
+     * Stores parameters for requests to the FusedLocationProviderApi.
+     */
+    private LocationRequest mLocationRequest;
+
+    /**
+     * Callback for Location events.
+     */
+    private LocationCallback mLocationCallback;
+
+    /**
+     * Represents a geographical location.
+     */
+    public static Location mCurrentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements
                 Henchman next = Henchman.values()[Protagonist.getHenchman().ordinal() + 1];
                 p.addCurrency(-next.getPrice());
                 int lifeInc = next.getLifeBonus() - Protagonist.getHenchman().getLifeBonus();
-                if (lifeInc >= 0){
-                    p.setLifeCurrent(p.getLifeCurrent()+lifeInc);
+                if (lifeInc >= 0) {
+                    p.setLifeCurrent(p.getLifeCurrent() + lifeInc);
                 } else {
                     p.setLifeCurrent(Math.min(p.getLifeCurrent(), Protagonist.getLifeMax() + lifeInc));
                 }
@@ -62,15 +99,15 @@ public class MainActivity extends AppCompatActivity implements
 
         Button buttonCloth = (Button) findViewById(R.id.buttonCloth);
         buttonCloth.setAllCaps(false);
-        buttonCloth.setOnClickListener(new View.OnClickListener(){
+        buttonCloth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Protagonist p = Protagonist.protagonist;
-                Cloth next = Cloth.values()[Protagonist.getCloth().ordinal()+1];
+                Cloth next = Cloth.values()[Protagonist.getCloth().ordinal() + 1];
                 Protagonist.protagonist.addCurrency(-next.getPrice());
                 int lifeInc = next.getLifeBonus() - Protagonist.getCloth().getLifeBonus();
-                if (lifeInc >= 0){
-                    p.setLifeCurrent(p.getLifeCurrent()+lifeInc);
+                if (lifeInc >= 0) {
+                    p.setLifeCurrent(p.getLifeCurrent() + lifeInc);
                 } else {
                     p.setLifeCurrent(Math.min(p.getLifeCurrent(), Protagonist.getLifeMax() + lifeInc));
                 }
@@ -81,15 +118,15 @@ public class MainActivity extends AppCompatActivity implements
 
         Button buttonFace = (Button) findViewById(R.id.buttonFace);
         buttonFace.setAllCaps(false);
-        buttonFace.setOnClickListener(new View.OnClickListener(){
+        buttonFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Protagonist p = Protagonist.protagonist;
-                Face next = Face.values()[Protagonist.getFace().ordinal()+1];
+                Face next = Face.values()[Protagonist.getFace().ordinal() + 1];
                 p.addCurrency(-next.getPrice());
                 int lifeInc = next.getLifeBonus() - Protagonist.getFace().getLifeBonus();
-                if (lifeInc >= 0){
-                    p.setLifeCurrent(p.getLifeCurrent()+lifeInc);
+                if (lifeInc >= 0) {
+                    p.setLifeCurrent(p.getLifeCurrent() + lifeInc);
                 } else {
                     p.setLifeCurrent(Math.min(p.getLifeCurrent(), Protagonist.getLifeMax() + lifeInc));
                 }
@@ -100,15 +137,15 @@ public class MainActivity extends AppCompatActivity implements
 
         Button buttonWeapon = (Button) findViewById(R.id.buttonWeapon);
         buttonWeapon.setAllCaps(false);
-        buttonWeapon.setOnClickListener(new View.OnClickListener(){
+        buttonWeapon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Protagonist p = Protagonist.protagonist;
-                Weapon next = Weapon.values()[Protagonist.getWeapon().ordinal()+1];
+                Weapon next = Weapon.values()[Protagonist.getWeapon().ordinal() + 1];
                 p.addCurrency(-next.getPrice());
                 int lifeInc = next.getLifeBonus() - Protagonist.getWeapon().getLifeBonus();
-                if (lifeInc >= 0){
-                    p.setLifeCurrent(p.getLifeCurrent()+lifeInc);
+                if (lifeInc >= 0) {
+                    p.setLifeCurrent(p.getLifeCurrent() + lifeInc);
                 } else {
                     p.setLifeCurrent(Math.min(p.getLifeCurrent(), Protagonist.getLifeMax() + lifeInc));
                 }
@@ -121,119 +158,93 @@ public class MainActivity extends AppCompatActivity implements
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), VenuesActivity.class);
                 //intent.putExtra(EXTRA_MESSAGE, message);
-                startActivity(intent);    }
+                startActivity(intent);
+            }
         });
 
-        // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        createLocationRequest();
+        // Request vorbereiten (noch nicht abschicken)
+        prepareLocationRequests();
 
-        updateUI();
     }
 
+
+
     /**
-     * Sets up the location request. Android has two location request settings:
-     * {@code ACCESS_COARSE_LOCATION} and {@code ACCESS_FINE_LOCATION}. These settings control
-     * the accuracy of the current location. This sample uses ACCESS_FINE_LOCATION, as defined in
-     * the AndroidManifest.xml.
-     * <p/>
-     * When the ACCESS_FINE_LOCATION setting is specified, combined with a fast update
-     * interval (5 seconds), the Fused Location Provider API returns location updates that are
-     * accurate to within a few feet.
-     * <p/>
-     * These settings are appropriate for mapping applications that show real-time location
-     * updates.
+     * bereitet alles für Location Requests vor, setzt sie aber noch nicht ab.
+     * (wird in onCreate gerufen)
      */
-    protected void createLocationRequest() {
+    private void prepareLocationRequests() {
+
+        // create Location Callback
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                mCurrentLocation = locationResult.getLastLocation();
+                Toast.makeText(MainActivity.this, mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
+                updateUI();
+            }
+        };
+
+        // create and configure Location Request
         mLocationRequest = new LocationRequest();
-
-        // Sets the desired interval for active location updates. This interval is
-        // inexact. You may not receive updates at all if no location sources are available, or
-        // you may receive them slower than requested. You may also receive updates faster than
-        // requested if other applications are requesting location at a faster interval.
-        mLocationRequest.setInterval(10_000);//UPDATE_INTERVAL_IN_MILLISECONDS
-
-        // Sets the fastest rate for active location updates. This interval is exact, and your
-        // application will never receive updates faster than this value.
-        mLocationRequest.setFastestInterval(5_000);
-
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-    }
-
     protected void onStart() {
-        mGoogleApiClient.connect();
         super.onStart();
 
         Protagonist.restoreBaseData(this);
         updateUI();
     }
 
+    @Override
     protected void onStop() {
         super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
+
     }
 
-    protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
-    }
+
 
     @Override
     protected void onPause() {
         super.onPause();
-        stopLocationUpdates();
+        //stopLocationUpdates(); // TODO ?
 
         Protagonist.storeBaseData(this);
 
     }
 
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-    }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected()) {
-            startLocationUpdates();
-        }
-
-        Protagonist.restoreBaseData(this);
-    }
-
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         startLocationUpdates();
+        Protagonist.restoreBaseData(this);
+        updateUI();
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        Toast.makeText(this, "connection to google play services failed", Toast.LENGTH_LONG).show();
-    }
 
-    @Override
-    public void onConnectionSuspended(int cause) {
-        mGoogleApiClient.connect();
+    /**
+     * Requests location updates from the FusedLocationApi. Note: we don't call this unless location
+     * runtime permission has been granted.
+     */
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions();
+            return;
+        }
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                mLocationCallback, Looper.myLooper());
+
+        updateUI();
     }
 
     @Override
@@ -361,6 +372,94 @@ public class MainActivity extends AppCompatActivity implements
             textView.setText("\tErfolgschance: " + Protagonist.getSuccessChance() + "%"
                     + "\n\tBeute bei Erfolg: " + Protagonist.getCoupMoneyMin()+"-"+Protagonist.getCoupMoneyMax()+"€"
                     + "\n\tSchaden bei Misserfolg: " + Protagonist.getCoupDamageMin()+"-"+Protagonist.getCoupDamageMax());
+        }
+    }
+
+    /**
+     * Shows a {@link Snackbar}.
+     *
+     * @param mainTextStringId The id for the string resource for the Snackbar text.
+     * @param actionStringId   The text of the action item.
+     * @param listener         The listener associated with the Snackbar action.
+     */
+    private void showSnackbar(final int mainTextStringId, final int actionStringId,
+                              View.OnClickListener listener) {
+        Snackbar.make(
+                findViewById(android.R.id.content),
+                getString(mainTextStringId),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(actionStringId), listener).show();
+    }
+
+
+    private void requestPermissions() {
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale) {
+            showSnackbar(R.string.permission_rationale,
+                    android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                        }
+                    });
+        } else {
+            // Request permission. It's possible this can be auto answered if device policy
+            // sets the permission in a given state or the user denied the permission
+            // previously and checked "Never ask again".
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length <= 0) {
+                // If user interaction was interrupted, the permission request is cancelled and you
+                // receive empty arrays.
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationUpdates();
+            } else {
+                // Permission denied.
+
+                // Notify the user via a SnackBar that they have rejected a core permission for the
+                // app, which makes the Activity useless. In a real app, core permissions would
+                // typically be best requested during a welcome-screen flow.
+
+                // Additionally, it is important to remember that a permission might have been
+                // rejected without asking the user for permission (device policy or "Never ask
+                // again" prompts). Therefore, a user interface affordance is typically implemented
+                // when permissions are denied. Otherwise, your app could appear unresponsive to
+                // touches or interactions which have required permissions.
+                showSnackbar(R.string.permission_denied_explanation,
+                        R.string.settings, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Build intent that displays the App settings screen.
+                                Intent intent = new Intent();
+                                intent.setAction(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package",
+                                        BuildConfig.APPLICATION_ID, null);
+                                intent.setData(uri);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        });
+            }
         }
     }
 }
