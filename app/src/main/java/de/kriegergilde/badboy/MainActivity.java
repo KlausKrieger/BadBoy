@@ -28,7 +28,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 /**
- * // TODO: TODOs ausbauen und stop einbauen!!
+ * // TODO: TODOs ausbauen
  *
  *
  */
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 4_000;
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 2_000;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 mCurrentLocation = locationResult.getLastLocation();
-                Toast.makeText(MainActivity.this, mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
                 updateUI();
             }
         };
@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onStart() {
         super.onStart();
+        //Toast.makeText(this, "in onStart()", Toast.LENGTH_SHORT).show();
 
         Protagonist.restoreBaseData(this);
         updateUI();
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
+        //Toast.makeText(this, "in onStop()", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -216,7 +217,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //stopLocationUpdates(); // TODO ?
+        //Toast.makeText(this, "in onPause()", Toast.LENGTH_SHORT).show();
+
+        stopLocationUpdates();
 
         Protagonist.storeBaseData(this);
 
@@ -226,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        //Toast.makeText(this, "in onResume()", Toast.LENGTH_SHORT).show();
+
         startLocationUpdates();
         Protagonist.restoreBaseData(this);
         updateUI();
@@ -245,6 +250,10 @@ public class MainActivity extends AppCompatActivity {
                 mLocationCallback, Looper.myLooper());
 
         updateUI();
+    }
+
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
     @Override
